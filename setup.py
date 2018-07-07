@@ -26,6 +26,7 @@ setup(
       },
       data_files=[
                  ('share/applications', ['files/ebook-maker.desktop']),
+                 ('share/icons', ['files/ebook-maker.png'])
       ],
       include_package_data=True,
       zip_safe=False)

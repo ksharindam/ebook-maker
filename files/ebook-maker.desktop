@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=eBook Maker
+Comment=Images to PDF Converter
+Icon=ebook-maker
+Exec=ebookmaker %F
+NoDisplay=false
+Categories=Office;
+MimeType=image/*;
+StartupNotify=false
+Terminal=false

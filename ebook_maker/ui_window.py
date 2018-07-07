@@ -146,7 +146,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Ebook Maker ( Image to PDF )"))
+        Dialog.setWindowTitle(_translate("Dialog", "eBook Maker ( Image to PDF )"))
         self.moveUpBtn.setToolTip(_translate("Dialog", "Move up"))
         self.moveDownBtn.setToolTip(_translate("Dialog", "Move down"))
         self.rotateLeftBtn.setToolTip(_translate("Dialog", "Rotate left"))
