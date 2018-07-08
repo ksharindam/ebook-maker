@@ -81,6 +81,7 @@ class Window(QDialog, Ui_Dialog):
         self.addFilesFromList(filenames)
 
     def addFilesFromList(self, filenames):
+        if filenames == [] : return
         output_name = time.strftime('PDF Doc %Y-%m-%d %H:%M:%S')
         self.filenameEdit.setText(output_name)
         pm = QPixmap(100,100)
@@ -95,6 +96,7 @@ class Window(QDialog, Ui_Dialog):
             thumb.clicked.connect(self.onThumbnailClick)
             row += 1
         self.getThumbnails(filenames)
+        self.tableWidget.selectRow(0)
 
     def removeFile(self):
         rows = self.tableWidget.selectionModel().selectedRows()
@@ -110,7 +112,9 @@ class Window(QDialog, Ui_Dialog):
         self.filenameEdit.clear()
 
     def moveUp(self):
-        row = self.tableWidget.selectionModel().selectedRows()[0].row()
+        rows = self.tableWidget.selectionModel().selectedRows()
+        if len(rows) == 0 : return
+        row = rows[0].row()
         if row == 0: return
         item_up = self.tableWidget.takeItem(row-1, 0)
         item_down = self.tableWidget.takeItem(row, 0)
@@ -124,7 +128,9 @@ class Window(QDialog, Ui_Dialog):
         self.tableWidget.selectRow(row-1)
 
     def moveDown(self):
-        row = self.tableWidget.selectionModel().selectedRows()[0].row()
+        rows = self.tableWidget.selectionModel().selectedRows()
+        if len(rows) == 0 : return
+        row = rows[0].row()
         if row == self.tableWidget.rowCount()-1: return
         item_up = self.tableWidget.takeItem(row, 0)
         item_down = self.tableWidget.takeItem(row+1, 0)
@@ -138,12 +144,16 @@ class Window(QDialog, Ui_Dialog):
         self.tableWidget.selectRow(row+1)
 
     def rotateLeft(self):
-        row = self.tableWidget.selectionModel().selectedRows()[0].row()
+        rows = self.tableWidget.selectionModel().selectedRows()
+        if len(rows) == 0 : return
+        row = rows[0].row()
         self.tableWidget.item(row, 0).rotate(-90)
         self.verticalLayout2.itemAt(row).widget().rotate(270)
 
     def rotateRight(self):
-        row = self.tableWidget.selectionModel().selectedRows()[0].row()
+        rows = self.tableWidget.selectionModel().selectedRows()
+        if len(rows) == 0 : return
+        row = rows[0].row()
         self.tableWidget.item(row, 0).rotate(90)
         self.verticalLayout2.itemAt(row).widget().rotate(90)
 
@@ -173,7 +183,7 @@ class Window(QDialog, Ui_Dialog):
 
 class FileItem(QTableWidgetItem):
     def __init__(self, filename):
-        QTableWidgetItem.__init__(self, filename)
+        QTableWidgetItem.__init__(self, os.path.basename(filename))
         self.filename = filename
         self.rotation = 0
         self.width, self.height = 0, 0
@@ -207,6 +217,7 @@ class Thumbnail(QLabel):
         self.setSizePolicy(0,0)
         self.setPixmap(pm)
         self.selected = False
+        self.pm = pm
 
     def mousePressEvent(self, ev):
         self.clicked.emit()
