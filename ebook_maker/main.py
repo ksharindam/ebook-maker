@@ -107,6 +107,7 @@ class Window(QDialog, Ui_Dialog):
             self.verticalLayout2.takeAt(0).widget().deleteLater()
         self.tableWidget.clear()
         self.tableWidget.setRowCount(0)
+        self.filenameEdit.clear()
 
     def moveUp(self):
         row = self.tableWidget.selectionModel().selectedRows()[0].row()
@@ -147,6 +148,8 @@ class Window(QDialog, Ui_Dialog):
         self.verticalLayout2.itemAt(row).widget().rotate(90)
 
     def createPdf(self):
+        if self.tableWidget.rowCount() == 0 : return
+        os.chdir(os.path.dirname(self.tableWidget.item(0, 0).filename))
         tmpfiles = []
         for i in range(self.tableWidget.rowCount()):
             item = self.tableWidget.item(i, 0)
@@ -156,7 +159,7 @@ class Window(QDialog, Ui_Dialog):
                 process_options = ['-colorspace', 'gray', '-lat', '15x15-5%', '-compress', 'Group4']
             else:
                 process_options = ['-compress', 'JPEG']
-            dpi = str(item.width*25.4/210)
+            dpi = str(item.width*25.4/210)              # paper will be 210mm width
             cmd = ['convert', filename, '-rotate', str(item.rotation)] + process_options + [
                     '-units', 'pixelsperinch', '-density', dpi, output_file]
             p = subprocess.Popen(cmd)
