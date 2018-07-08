@@ -170,8 +170,8 @@ class Window(QDialog, Ui_Dialog):
             else:
                 process_options = ['-compress', 'JPEG']
             dpi = str(item.width*25.4/210)              # paper will be 210mm width
-            cmd = ['convert', filename, '-rotate', str(item.rotation)] + process_options + [
-                    '-units', 'pixelsperinch', '-density', dpi, output_file]
+            cmd = ['convert', filename, '-auto-orient', '-rotate', str(item.rotation)] + \
+                  process_options + ['-units', 'pixelsperinch', '-density', dpi, output_file]
             p = subprocess.Popen(cmd)
             p.wait()
             tmpfiles.append(output_file)
