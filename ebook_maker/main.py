@@ -3,9 +3,9 @@
 
 import sys, os, subprocess, time
 from PyQt5 import QtCore
-from PyQt5.QtGui import QPixmap, QImageReader, QImage, QPainter, QPen, QTransform, QIcon
-from PyQt5.QtWidgets import ( QApplication, QDialog, QFileDialog, QButtonGroup, QMessageBox,
-    QTableWidgetItem, QHeaderView, QVBoxLayout, QLabel
+from PyQt5.QtGui import QPixmap, QImageReader, QImage, QPainter, QPen, QTransform
+from PyQt5.QtWidgets import ( QApplication, QDialog, QFileDialog, QMessageBox,
+    QTableWidgetItem, QHeaderView, QLabel
 )
 sys.path.append(os.path.dirname(__file__)) # A workout for enabling python 2 like import
 from ui_window import Ui_Dialog
@@ -161,6 +161,7 @@ class Window(QDialog, Ui_Dialog):
         if self.tableWidget.rowCount() == 0 : return
         os.chdir(os.path.dirname(self.tableWidget.item(0, 0).filename))
         tmpfiles = []
+        procs = []
         for i in range(self.tableWidget.rowCount()):
             item = self.tableWidget.item(i, 0)
             filename = item.filename
@@ -173,13 +174,21 @@ class Window(QDialog, Ui_Dialog):
             cmd = ['convert', filename, '-auto-orient', '-rotate', str(item.rotation)] + \
                   process_options + ['-units', 'pixelsperinch', '-density', dpi, output_file]
             p = subprocess.Popen(cmd)
-            p.wait()
+            procs.append(p)
+            if (len(procs) == 3) or (i==self.tableWidget.rowCount()-1):
+                while 1:
+                    stats = [proc.poll() == None for proc in procs]
+                    running = any(stats)
+                    if not running : break
+                    wait(500)
+                procs.clear()
             tmpfiles.append(output_file)
         cmd = ['pdfunite'] + tmpfiles + ['%s.pdf'%self.filenameEdit.text()]
         p = subprocess.Popen(cmd)
         p.wait()
         for each in tmpfiles:
             os.remove(each)
+        QMessageBox.information(self, "Finished !","Conversion has been finished")
 
 class FileItem(QTableWidgetItem):
     def __init__(self, filename):
@@ -250,6 +259,11 @@ class Thumbnail(QLabel):
         transform.rotate(degree)
         self.pm = self.pm.transformed(transform)
         self.updatePixmap()
+
+def wait(millisec):
+    loop = QtCore.QEventLoop()
+    QtCore.QTimer.singleShot(millisec, loop.quit)
+    loop.exec_()
 
 def main():
     app = QApplication(sys.argv)
