@@ -22,7 +22,7 @@ class Window(QDialog, Ui_Dialog):
         # manage threads
         self.thread1 = QtCore.QThread(self)
         self.thread2 = QtCore.QThread(self)
-        self.loader1 = Loader()                 # TODO : delete loader on close
+        self.loader1 = Loader()
         self.loader1.moveToThread(self.thread1)
         self.loader2 = Loader()
         self.loader2.moveToThread(self.thread2)
@@ -195,6 +195,16 @@ class Window(QDialog, Ui_Dialog):
             os.remove(each)
         QMessageBox.information(self, "Finished !","Conversion has been finished")
 
+    def closeEvent(self, ev):
+        self.reject()
+        QDialog.closeEvent(self, ev)
+
+    def reject(self):
+        self.loader1.deleteLater()
+        self.loader2.deleteLater()
+        QDialog.reject(self)
+
+
 class FileItem(QTableWidgetItem):
     def __init__(self, filename):
         QTableWidgetItem.__init__(self, os.path.basename(filename))
@@ -208,6 +218,7 @@ class FileItem(QTableWidgetItem):
 
 
 class Loader(QtCore.QObject):
+    ''' Loads images and converts them to thumbnails'''
     thumbnailLoaded = QtCore.pyqtSignal(QImage, int, int, int)
     def __init__(self, parent=None):
         QtCore.QObject.__init__(self, parent)
