@@ -18,6 +18,7 @@ class Window(QDialog, Ui_Dialog):
         self.setupUi(self)
         self.tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.tableWidget.itemSelectionChanged.connect(self.onSelectionChange)
+        self.tableWidget.cellClicked.connect(self.onItemClick)
         # manage threads
         self.thread1 = QtCore.QThread(self)
         self.thread2 = QtCore.QThread(self)
@@ -75,6 +76,10 @@ class Window(QDialog, Ui_Dialog):
             thumbnail.select(False)
         thumbnail = self.verticalLayout2.itemAt(row).widget()
         thumbnail.select(True)
+
+    def onItemClick(self, row, col):
+        scrolbar_pos = self.verticalLayout2.itemAt(row).widget().pos().y()
+        self.scrollArea.verticalScrollBar().setValue(scrolbar_pos)
 
     def addFiles(self):
         filenames, format = QFileDialog.getOpenFileNames(self, "Select Files to Open", '', 'JPEG Images (*.jpg *.jpeg);;All Files (*)')
