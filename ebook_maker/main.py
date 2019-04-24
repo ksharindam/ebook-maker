@@ -87,7 +87,7 @@ class Window(QDialog, Ui_Dialog):
 
     def addFilesFromList(self, filenames):
         if filenames == [] : return
-        output_name = time.strftime('PDF Doc %Y-%m-%d %H:%M:%S')
+        output_name = time.strftime('PDF Doc %H%M%S')
         self.filenameEdit.setText(output_name)
         pm = QPixmap(100,100)
         pm.fill()
