@@ -3,12 +3,12 @@ Name = ebook_maker
 Executable Command = ebookmaker
 Package Name = ebook-maker
 Python Module Name = ebook_maker
-Debian Dependency = python3-pyqt5, imagemagick, poppler-utils
+Debian Dependency = python3-pyqt5
 Description = Image to PDF document converter
 Changes :
-        
+ v2.0 : dependency on imagemagick and poppler-utils removed
 ...........................................................................
-|   Copyright (C) 2018 Arindam Chaudhuri <ksharindam@gmail.com>            |
+|   Copyright (C) 2018-2019 Arindam Chaudhuri <ksharindam@gmail.com>       |
 |                                                                          |
 |   This program is free software: you can redistribute it and/or modify   |
 |   it under the terms of the GNU General Public License as published by   |
@@ -24,8 +24,7 @@ Changes :
 |   along with this program.  If not, see <http://www.gnu.org/licenses/>.  |
 ...........................................................................
 """
-#TODO : 
-#      
+#TODO :
 
-__version__ = '1.1'
+__version__ = '2.0'
 

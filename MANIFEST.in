@@ -1,1 +1,2 @@
 include files/ebook-maker.desktop
+include ebook_maker/filters.so
