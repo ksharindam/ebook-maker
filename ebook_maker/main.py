@@ -234,8 +234,11 @@ class Window(QDialog, Ui_Dialog):
         self.processedImages[self.filenames.index(filename)] = image
         remaining = len(self.filenames)-self.current_index
         if len(self.processedImages) == min(3, remaining):
+            index_list = list(self.processedImages.keys())
+            index_list.sort()
             #here save images as pdf
-            for index, image in self.processedImages.items():
+            for index in index_list:
+                image = self.processedImages[index]
                 rotation = self.tableWidget.item(index, 0).rotation
                 # create buffer for saving image in memory
                 buff = QtCore.QBuffer(self)
@@ -309,26 +312,30 @@ class Worker(QtCore.QObject):
         QtCore.QObject.__init__(self, parent)
         self.index = i
 
+    def readImage(self, filename):
+        image_reader = QImageReader(filename)
+        image_reader.setAutoTransform(True)
+        return image_reader.read()
+
     def load(self, i, files, index_list):
         if self.index != i : return
-        #print('files', files)
         for i in range(len(files)):
-            image_reader = QImageReader(files[i])
-            image_reader.setAutoTransform(True)
-            image = image_reader.read()
+            image = self.readImage(files[i])
             if not image.isNull() :
                 width, height = image.width(), image.height()
-                image = image.scaledToWidth(150)
+                image = image.scaledToWidth(150, 1)
                 self.thumbnailLoaded.emit(image, index_list[i], width, height)
 
     def processImage(self, i, filename, mode):
         if self.index != i : return
-        image_reader = QImageReader(filename)
-        image_reader.setAutoTransform(True)
-        image = image_reader.read()
-        #if image.isNull() : return image
-        if image.width() > 1600:
-            image = image.scaledToWidth(1600)
+        image = self.readImage(filename)
+        #if image.isNull() : return
+        w,h = image.width(), image.height()
+        if min(w, h) > 1600:
+            if h > w:
+                image = image.scaledToWidth(1600)
+            else:
+                image = image.scaledToHeight(1600)
         if mode==1:
             adaptiveThresh(image)
             image = image.convertToFormat(QImage.Format_Mono)

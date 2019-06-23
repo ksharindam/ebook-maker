@@ -42,11 +42,11 @@ void adaptiveIntegralThresh(uchar *data, int w, int h, int bpl)
                 intImg[y][x] = intImg[y-1][x] + sum;
         }
     }
-    // Apply Bradley threshold (tune value of T and s to get expected result)
-    float T = 0.15; // higher value, more white
+    // Apply Adaptive threshold (tune value of k and s to get expected result)
+    float k = 0.15; // higher value, narrower text
     int s = w/32;   // lower value, more white
     int s2 = s/2;
-    int x1,y1,x2,y2, count, sum;
+    int x1,y1,x2,y2, count, sum, md;
     for (int i=0;i<h;++i)
     {
         y1 = ((i - s2)>0) ? (i - s2) : 0;
@@ -59,8 +59,9 @@ void adaptiveIntegralThresh(uchar *data, int w, int h, int bpl)
 
             count = (x2 - x1)*(y2 - y1);
             sum = intImg[y2][x2] - intImg[y2][x1] - intImg[y1][x2] + intImg[y1][x1];
+            md = qGray(row[j]) - sum/count;     // mean deviation
 
-            if ((qGray(row[j]) * count) < (int)(sum*(1.0 - T)) /*or qGray(row[j]) < 50*/)
+            if ( qGray(row[j]) < sum/count *(1+ k*(md/128-1)) )
                 row[j] = qRgb(0,0,0);
             else
                 row[j] = qRgb(255,255,255);
