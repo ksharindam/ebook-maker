@@ -6,8 +6,9 @@ Python Module Name = ebook_maker
 Debian Dependency = python3-pyqt5
 Description = Image to PDF document converter
 Changes :
- v2.1 : page ordering bug fixed
- v2.0 : dependency on imagemagick and poppler-utils removed
+v2.2 :  ui_window.py removed
+v2.1 :  page ordering bug fixed
+v2.0 :  dependency on imagemagick and poppler-utils removed
 ...........................................................................
 |   Copyright (C) 2018-2019 Arindam Chaudhuri <ksharindam@gmail.com>       |
 |                                                                          |
@@ -27,5 +28,5 @@ Changes :
 """
 #TODO :
 
-__version__ = '2.1'
+__version__ = '2.2'
 

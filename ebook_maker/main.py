@@ -8,18 +8,22 @@ from PyQt5.QtGui import QPixmap, QImageReader, QImage, QPainter, QPen, QTransfor
 from PyQt5.QtWidgets import ( QApplication, QDialog, QFileDialog, QMessageBox,
     QTableWidgetItem, QHeaderView, QLabel, QSystemTrayIcon
 )
-sys.path.append(os.path.dirname(__file__)) # A workout for enabling python 2 like import
-from ui_window import Ui_Dialog
+from PyQt5 import uic
+
+PROGRAM_DIR = os.path.dirname(__file__)
+sys.path.append(PROGRAM_DIR) # A workout for enabling python 2 like import
+
 from pdfwriter import *
 
-lib = CDLL(os.path.dirname(__file__) +"/filters.so")
+lib = CDLL(PROGRAM_DIR +"/filters.so")
 def adaptiveThresh(image):
     data_ptr = c_void_p(image.bits().__int__())
     w,h,BPL = image.width(), image.height(), image.bytesPerLine()
     lib.adaptiveIntegralThresh(data_ptr, w, h, BPL)
 
+ui_dialog, dialog = uic.loadUiType(PROGRAM_DIR+"/window.ui")
 
-class Window(QDialog, Ui_Dialog):
+class Window(ui_dialog, dialog):
     thumbnailLoadRequested = QtCore.pyqtSignal(int, list, list)
     imgProcRequested = QtCore.pyqtSignal(int, str, int)
     def __init__(self):
@@ -329,6 +333,8 @@ class Worker(QtCore.QObject):
     def processImage(self, i, filename, mode):
         if self.index != i : return
         image = self.readImage(filename)
+        if image.format() not in [4,5]:   # must be in RGB32 or ARGB32 format
+            image = image.convertToFormat(QImage.Format_RGB32)
         #if image.isNull() : return
         w,h = image.width(), image.height()
         if min(w, h) > 1600:

@@ -19,7 +19,8 @@ def readme():
         return f.read()
 
 setup(
-    name='ebook_maker',
+    name='ebook-maker',
+    packages=['ebook_maker'],
     version=__version__,
     description='Images to PDF document converter',
     long_description= readme(),
@@ -29,7 +30,6 @@ setup(
     author='Arindam Chaudhuri',
     author_email='ksharindam@gmail.com',
     license='GNU GPLv3',
-    packages=['ebook_maker'],
     classifiers=[
     'Development Status :: 5 - Production/Stable',
     'Environment :: X11 Applications :: Qt',
