@@ -7,7 +7,7 @@ Images to PDF converter written in PyQt5
 
 ### Install
 Open terminal and change directory to ebook-maker-master. Then to compile binary, run...  
-`python setup.py compile`
+`python setup.py compile`  
 `pip install --user .`  
 
 ### Uninstall
