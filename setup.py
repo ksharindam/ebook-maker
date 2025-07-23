@@ -1,50 +1,27 @@
-
-import os
 from setuptools import setup
-from distutils.cmd import Command
-from ebook_maker import __version__
+from setuptools.command.bdist_wheel import bdist_wheel
+from subprocess import check_call
 
-class Build(Command):
-    description = 'build c/c++ extensions'
-    user_options = []     # The format is [long option, short option, description]
-    def initialize_options(self):
-        pass
+
+# allows to run commands before building wheel
+class BdistWheel(bdist_wheel):
     def finalize_options(self):
-        pass
-    def run(self):
-        os.system("make --directory=lib")
-
-def readme():
-    with open('README.md') as f:
-        return f.read()
+        bdist_wheel.finalize_options(self)
+        check_call("pyrcc5 -o ./ebook_maker/resources_rc.py ./data/resources.qrc".split())
+        check_call("make --directory=lib".split())
 
 setup(
     name='ebook-maker',
     packages=['ebook_maker'],
-    version=__version__,
-    description='Images to PDF document converter',
-    long_description= readme(),
-    long_description_content_type = 'text/markdown',
-    keywords='documents ebook pdf pyqt pyqt5 qt5',
-    url='http://github.com/ksharindam/ebook-maker',
-    author='Arindam Chaudhuri',
-    author_email='ksharindam@gmail.com',
-    license='GNU GPLv3',
-    classifiers=[
-    'Development Status :: 5 - Production/Stable',
-    'Environment :: X11 Applications :: Qt',
-    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-    'Operating System :: POSIX :: Linux',
-    'Programming Language :: Python :: 3',
-    ],
+    #version="2.3",
     entry_points={
-      'console_scripts': ['ebookmaker=ebook_maker.main:main'],
+      'gui_scripts': ['ebook_maker=ebook_maker.main:main'],
     },
     data_files=[
-             ('share/applications', ['files/ebook-maker.desktop']),
-             ('share/icons', ['files/ebook-maker.png'])
+        ('share/applications', ['data/ebook-maker.desktop']),
+        ('share/icons', ['data/ebook-maker.png'])
     ],
-    cmdclass = {'compile' : Build},     # using {'build' : Build} gives error
+    cmdclass = {'bdist_wheel': BdistWheel},
     include_package_data=True,
     zip_safe=False
 )

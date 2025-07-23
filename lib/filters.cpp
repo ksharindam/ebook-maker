@@ -1,4 +1,4 @@
-#include <memory>
+#include <cstdlib>
 
 typedef unsigned char uchar;
 typedef unsigned int QRgb;

@@ -28,5 +28,5 @@ v2.0 :  dependency on imagemagick and poppler-utils removed
 """
 #TODO :
 
-__version__ = '2.2'
+__version__ = '2.3'
 

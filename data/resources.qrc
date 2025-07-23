@@ -1,0 +1,11 @@
+<RCC>
+  <qresource>
+    <file>icons/go-down.png</file>
+    <file>icons/go-up.png</file>
+    <file>icons/pdf.png</file>
+    <file>icons/quit.png</file>
+    <file>icons/rotateleft.png</file>
+    <file>icons/rotateright.png</file>
+    <file>ebook-maker.png</file>
+  </qresource>
+</RCC>

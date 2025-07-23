@@ -14,7 +14,7 @@
    <string>eBook Maker ( Image to PDF )</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../files/resources.qrc">
+   <iconset resource="../data/resources.qrc">
     <normaloff>:/ebook-maker.png</normaloff>:/ebook-maker.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -59,8 +59,8 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../files/resources.qrc">
-             <normaloff>:/go-up.png</normaloff>:/go-up.png</iconset>
+            <iconset resource="../data/resources.qrc">
+             <normaloff>:/icons/go-up.png</normaloff>:/icons/go-up.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -79,8 +79,8 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../files/resources.qrc">
-             <normaloff>:/go-down.png</normaloff>:/go-down.png</iconset>
+            <iconset resource="../data/resources.qrc">
+             <normaloff>:/icons/go-down.png</normaloff>:/icons/go-down.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -99,8 +99,8 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../files/resources.qrc">
-             <normaloff>:/rotateleft.png</normaloff>:/rotateleft.png</iconset>
+            <iconset resource="../data/resources.qrc">
+             <normaloff>:/icons/rotateleft.png</normaloff>:/icons/rotateleft.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -119,8 +119,8 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../files/resources.qrc">
-             <normaloff>:/rotateright.png</normaloff>:/rotateright.png</iconset>
+            <iconset resource="../data/resources.qrc">
+             <normaloff>:/icons/rotateright.png</normaloff>:/icons/rotateright.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -253,8 +253,8 @@
          <string>Close</string>
         </property>
         <property name="icon">
-         <iconset resource="../files/resources.qrc">
-          <normaloff>:/quit.png</normaloff>:/quit.png</iconset>
+         <iconset resource="../data/resources.qrc">
+          <normaloff>:/icons/quit.png</normaloff>:/icons/quit.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -270,8 +270,8 @@
          <string>Create PDF</string>
         </property>
         <property name="icon">
-         <iconset resource="../files/resources.qrc">
-          <normaloff>:/pdf.png</normaloff>:/pdf.png</iconset>
+         <iconset resource="../data/resources.qrc">
+          <normaloff>:/icons/pdf.png</normaloff>:/icons/pdf.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -316,7 +316,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../files/resources.qrc"/>
+  <include location="../data/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

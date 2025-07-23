@@ -393,7 +393,7 @@ class Thumbnail(QLabel):
 
 class Notifier(QSystemTrayIcon):
     def __init__(self, parent):
-        QSystemTrayIcon.__init__(self, QIcon(':/quartz.png'), parent)
+        QSystemTrayIcon.__init__(self, QIcon(':/ebook-maker.png'), parent)
         self.messageClicked.connect(self.deleteLater)
         self.activated.connect(self.deleteLater)
 
