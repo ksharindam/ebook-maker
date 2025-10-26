@@ -19,7 +19,7 @@ setup(
     },
     data_files=[
         ('share/applications', ['data/ebook-maker.desktop']),
-        ('share/icons', ['data/ebook-maker.png'])
+        ('share/icons/hicolor/scalable/apps', ['data/ebook-maker.png'])
     ],
     cmdclass = {'bdist_wheel': BdistWheel},
     include_package_data=True,
