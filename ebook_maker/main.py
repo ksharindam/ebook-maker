@@ -3,16 +3,17 @@
 
 import sys, os, subprocess, time
 from ctypes import *
-from PyQt5 import QtCore
-from PyQt5.QtGui import QPixmap, QImageReader, QImage, QPainter, QPen, QTransform, QIcon
-from PyQt5.QtWidgets import ( QApplication, QDialog, QFileDialog, QMessageBox,
+from PyQt6.QtCore import QObject, Qt, pyqtSignal, QBuffer, QIODevice, QThread, QTimer, QEventLoop
+from PyQt6.QtGui import QPixmap, QImageReader, QImage, QPainter, QPen, QTransform, QIcon
+from PyQt6.QtWidgets import ( QApplication, QDialog, QFileDialog, QMessageBox, QSizePolicy,
     QTableWidgetItem, QHeaderView, QLabel, QSystemTrayIcon
 )
-from PyQt5 import uic
+from PyQt6 import uic
 
 PROGRAM_DIR = os.path.dirname(__file__)
 sys.path.append(PROGRAM_DIR) # A workout for enabling python 2 like import
 
+import resources_rc
 from pdfwriter import *
 
 lib = CDLL(PROGRAM_DIR +"/filters.so")
@@ -24,12 +25,12 @@ def adaptiveThresh(image):
 ui_dialog, dialog = uic.loadUiType(PROGRAM_DIR+"/window.ui")
 
 class Window(ui_dialog, dialog):
-    thumbnailLoadRequested = QtCore.pyqtSignal(int, list, list)
-    imgProcRequested = QtCore.pyqtSignal(int, str, int)
+    thumbnailLoadRequested = pyqtSignal(int, list, list)
+    imgProcRequested = pyqtSignal(int, str, int)
     def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
-        self.tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.tableWidget.itemSelectionChanged.connect(self.onSelectionChange)
         self.tableWidget.cellClicked.connect(self.onItemClick)
         self.compressBtn.setEnabled(False)
@@ -37,7 +38,7 @@ class Window(ui_dialog, dialog):
         self.threads = []
         self.workers = []
         for i in range(3):
-            thread = QtCore.QThread(self)
+            thread = QThread(self)
             worker = Worker(i)
             worker.moveToThread(thread)
             self.thumbnailLoadRequested.connect(worker.load)
@@ -113,7 +114,7 @@ class Window(ui_dialog, dialog):
             self.tableWidget.insertRow(row)
             self.tableWidget.setItem(row,0, item)
             thumb = Thumbnail(self.scrollAreaWidgetContents, pm)
-            self.verticalLayout2.addWidget(thumb, 0, QtCore.Qt.AlignHCenter)
+            self.verticalLayout2.addWidget(thumb, 0, Qt.AlignmentFlag.AlignHCenter)
             thumb.clicked.connect(self.onThumbnailClick)
             row += 1
         self.getThumbnails(filenames)
@@ -245,13 +246,13 @@ class Window(ui_dialog, dialog):
                 image = self.processedImages[index]
                 rotation = self.tableWidget.item(index, 0).rotation
                 # create buffer for saving image in memory
-                buff = QtCore.QBuffer(self)
-                buff.open(QtCore.QIODevice.ReadWrite)
+                buff = QBuffer(self)
+                buff.open(QIODevice.OpenModeFlag.ReadWrite)
                 img = PdfObj(Type='/XObject', Subtype='/Image',
                             Width=image.width(), Height=image.height())
 
                 if self.clearBgBtn.isChecked(): # Embed as monochrome png image
-                    #image = image.convertToFormat(QImage.Format_Mono)
+                    #image = image.convertToFormat(QImage.Format.Format_Mono)
                     image.save(buff, "PNG")
                     idat, palette, bpc = parse_png(buff.data().data())
                     #img['ColorSpace'] = '/DeviceGray'
@@ -308,12 +309,12 @@ class FileItem(QTableWidgetItem):
         self.rotation += deg
 
 
-class Worker(QtCore.QObject):
+class Worker(QObject):
     ''' Loads images and converts them to thumbnails'''
-    thumbnailLoaded = QtCore.pyqtSignal(QImage, int, int, int)
-    imageReady = QtCore.pyqtSignal(str, QImage)
+    thumbnailLoaded = pyqtSignal(QImage, int, int, int)
+    imageReady = pyqtSignal(str, QImage)
     def __init__(self, i, parent=None):
-        QtCore.QObject.__init__(self, parent)
+        QObject.__init__(self, parent)
         self.index = i
 
     def readImage(self, filename):
@@ -327,14 +328,14 @@ class Worker(QtCore.QObject):
             image = self.readImage(files[i])
             if not image.isNull() :
                 width, height = image.width(), image.height()
-                image = image.scaledToWidth(150, 1)
+                image = image.scaledToWidth(150, Qt.TransformationMode.SmoothTransformation)
                 self.thumbnailLoaded.emit(image, index_list[i], width, height)
 
     def processImage(self, i, filename, mode):
         if self.index != i : return
         image = self.readImage(filename)
         if image.format() not in [4,5]:   # must be in RGB32 or ARGB32 format
-            image = image.convertToFormat(QImage.Format_RGB32)
+            image = image.convertToFormat(QImage.Format.Format_RGB32)
         #if image.isNull() : return
         w,h = image.width(), image.height()
         if min(w, h) > 1600:
@@ -344,16 +345,16 @@ class Worker(QtCore.QObject):
                 image = image.scaledToHeight(1600)
         if mode==1:
             adaptiveThresh(image)
-            image = image.convertToFormat(QImage.Format_Mono)
+            image = image.convertToFormat(QImage.Format.Format_Mono)
         self.imageReady.emit(filename, image)
 
 
 class Thumbnail(QLabel):
-    clicked = QtCore.pyqtSignal()
+    clicked = pyqtSignal()
     def __init__(self, parent, pm):
         QLabel.__init__(self, parent)
         self.setMouseTracking(True)
-        self.setSizePolicy(0,0)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setPixmap(pm)
         self.selected = False
         self.pm = pm
@@ -370,7 +371,7 @@ class Thumbnail(QLabel):
         if self.selected:
             pm = self.pm.copy()
             painter = QPainter(pm)
-            pen = QPen(QtCore.Qt.blue)
+            pen = QPen(Qt.GlobalColor.blue)
             pen.setWidth(4)
             painter.setPen(pen)
             painter.drawRect(2, 2, pm.width()-4, pm.height()-4)
@@ -402,12 +403,12 @@ class Notifier(QSystemTrayIcon):
         # Wait for 200ms, otherwise notification bubble will showup in wrong position.
         wait(200)
         self.showMessage(title, message)
-        QtCore.QTimer.singleShot(3000, self.deleteLater)
+        QTimer.singleShot(3000, self.deleteLater)
 
 def wait(millisec):
-    loop = QtCore.QEventLoop()
-    QtCore.QTimer.singleShot(millisec, loop.quit)
-    loop.exec_()
+    loop = QEventLoop()
+    QTimer.singleShot(millisec, loop.quit)
+    loop.exec()
 
 def autoRename(filename, directory=None):
     if directory: filename = directory + filename
@@ -425,7 +426,7 @@ def main():
     app.setApplicationName("ebook-maker")
     win = Window()
     win.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 if __name__ == '__main__':
     main()

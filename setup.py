@@ -7,7 +7,6 @@ from subprocess import check_call
 class BdistWheel(bdist_wheel):
     def finalize_options(self):
         bdist_wheel.finalize_options(self)
-        check_call("pyrcc5 -o ./ebook_maker/resources_rc.py ./data/resources.qrc".split())
         check_call("make --directory=lib".split())
 
 setup(

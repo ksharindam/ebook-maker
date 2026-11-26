@@ -1,9 +1,9 @@
 # eBook Maker
-Images to PDF converter written in PyQt5  
+Images to PDF converter  
 
 ### Dependencies
- * python3-pyqt5  
- * pyqt5-dev-tools
+ * python3-pyqt6  
+ * pyqt6-dev-tools  
 
 ### Install
 Open terminal and change to project root directory. Then run...  
@@ -23,4 +23,4 @@ To convert to PDF, select the images and right click in file manager and select 
  * save as pdf  
 
 ### Screenshot
-![Screenshot](files/Screenshot.png)  
+![Screenshot](data/Screenshot.png)  

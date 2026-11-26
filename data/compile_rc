@@ -10,9 +10,11 @@ done
 echo "  </qresource>" >> resources.qrc
 echo "</RCC>" >> resources.qrc
 
-pyrcc5 -o ../ebook_maker/resources_rc.py resources.qrc
+# requires qt6-base-dev-tools package
+/usr/lib/qt6/libexec/rcc -g python resources.qrc -o ../ebook_maker/resources_rc.py
 
 if [ $? -eq 0 ]; then
+    sed -i "s/^from PySide.*/from PyQt6 import QtCore/g" ../ebook_maker/resources_rc.py
     echo "Compiled Resources saved as ../ebook_maker/resources_rc.py"
 else
     echo "Failed to compile resources"
